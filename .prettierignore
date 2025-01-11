@@ -1,0 +1,12 @@
+!.env.example
+.env
+.env.*
+/build
+
+node_modules
+public
+
+# Ignore files for PNPM, NPM and YARN
+package-lock.json
+package.json
+vite.config.js

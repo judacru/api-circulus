@@ -1,11 +1,13 @@
-const express = require("express");
-const router = express.Router();
-const FollowController = require("../controllers/FollowController");
-const check = require("../middlewares/auth");
+const express = require('express')
+const router = express.Router()
+const FollowController = require('../app/controllers/FollowController')
+const check = require('../middlewares/auth')
 
-router.post("/save", check.auth, FollowController.save)
-router.get("/following/:id?/:page?", check.auth, FollowController.following)
-router.get("/followers/:id?/:page?", check.auth, FollowController.followers)
-router.delete("/unfollow/:id", check.auth, FollowController.unfollow)
+const followController = new FollowController()
+
+router.post('/save', check.auth, followController.create)
+router.get('/following/:id?/:page?', check.auth, followController.following)
+router.get('/followers/:id?/:page?', check.auth, followController.followers)
+router.delete('/unfollow/:id', check.auth, followController.unfollow)
 
 module.exports = router

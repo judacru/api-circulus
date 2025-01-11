@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(255)
+  surname      String?       @db.VarChar(255)
+  bio          String?       @db.Text
+  nick         String        @db.VarChar(255)
+  email        String        @unique(map: "email") @db.VarChar(255)
+  password     String        @db.VarChar(255)
+  role         String?       @default("role_user") @db.VarChar(255)
+  image        String?       @default("default.png") @db.VarChar(255)
+  createdAt    DateTime?     @default(now()) @db.DateTime(0)
+  followings   Follow[]      @relation("Followings")
+  followers    Follow[]      @relation("Followers")
+  publications Publication[]
+}
+
+model Publication {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  text      String    @db.Text
+  file      String?   @db.VarChar(255)
+  createdAt DateTime? @default(now()) @db.DateTime(0)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "Publication_ibfk_1")
+
+  @@index([userId], map: "userId")
+}
+
+model Follow {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  followedId Int
+  createdAt  DateTime? @default(now()) @db.DateTime(0)
+  user       User      @relation("Followings", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "Follow_ibfk_1")
+  followed   User      @relation("Followers", fields: [followedId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "Follow_ibfk_2")
+
+  @@index([followedId], map: "followedId")
+  @@index([userId], map: "userId")
+}
