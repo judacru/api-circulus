@@ -11,8 +11,23 @@ console.log('API Node para Circulus')
 
 const app = express()
 const port = config.PORT
+const allowedOrigins = config.CORS_ORIGIN
 
-app.use(cors())
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true)
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true)
+      } else {
+        return callback(new Error('No autorizado por CORS'))
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }),
+)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
